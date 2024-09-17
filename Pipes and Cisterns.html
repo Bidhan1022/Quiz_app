@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+
+    <!-- external css link -->
+    <link rel="stylesheet" href="style.css">
+    
+    </style>
+</head>
+<body>
+    <!-- main container -->
+
+    <div class="container"> 
+        <div>
+            <!-- subject of the quiz -->
+            <h1>Pipes and Cisterns</h1>
+        </div>
+        <hr>
+        <div class="container-2">
+            <div class="timerBorder">
+                <!-- timing display -->
+            <h3 id="timer">30</h3>
+            </div>
+        <div>
+            <!-- score display -->
+            <h3>SCORE: <span id="score">0</span></h3>
+        </div>
+    </div>
+    <!-- Question serial Position -->
+    <div id="progress"><h3>01/10</h3></div>
+    <div class="Questions">
+
+        <!-- question displayer heading -->
+        <h2 id="h2question">Pipe A can fill a tank in 30 minutes, and Pipe B can fill the same tank in 20 minutes. How long will it take to fill the tank if both pipes are opened together?</h2>
+    </div>
+
+    <div>
+        <!-- option button -->
+        <button class="quizBtn" onclick="checkAnswer(this)">12 minutes</button>
+        <button class="quizBtn" onclick="checkAnswer(this)">15 minutes</button>
+        <br>
+        <button class="quizBtn" onclick="checkAnswer(this)">18 minutes</button>
+        <button class="quizBtn" onclick="checkAnswer(this)">25 minutes</button>
+        <br>
+        
+    </div>
+
+
+    <!-- button for next question -->
+    <button id="nextBtn" onclick="nextQuestion()">Next</button>
+
+    <!-- external script adding below -->
+    <script>
+        let currentQuestion = 0;
+let score = 0;
+
+//GK 
+
+const questions =[
+    {
+         // Question 1
+         Question: "A pipe can fill a tank in 15 hours, but due to a leak, it takes 20 hours to fill. How long will the leak alone take to empty the full tank?",
+        Options: ["45 hours", "50 hours", "60 hours", "75 hours"],
+        Ans: "60 hours",
+    },
+    {
+         // Question 2
+         Question: "Three pipes can fill a tank in 3 hours, 4 hours, and 5 hours, respectively. If all three pipes are opened together, how long will it take to fill the tank?",
+        Options: ["1 hour", "2 hours", "2.2 hours", "1.9 hours"],
+        Ans: "1.9 hours",
+    },
+    {
+         // Question 3
+         Question: "A tank is filled by a pipe in 6 hours. Another pipe can fill the same tank in 9 hours. How long will it take for both pipes to fill the tank together?",
+        Options: ["3.6 hours", "5 hours", "7 hours", "4.5 hours"],
+        Ans: "3.6 hours",
+        
+    },
+    {
+        // Question 4
+        Question: "Pipe A fills a tank in 10 hours and Pipe B fills it in 15 hours. Pipe C can empty the tank in 20 hours. If all three are opened together, how long will it take to fill the tank?",
+        Options: ["10 hours", "12 hours", "8 hours", "9 hours"],
+        Ans: "8 hours",
+    },
+    {
+        // Question 5
+        Question: "A tank is filled by Pipe A in 4 hours and emptied by Pipe B in 6 hours. If both pipes are opened together, how long will it take to fill the tank?",
+        Options: ["10 hours", "12 hours", "24 hours", "8 hours"],
+        Ans: "24 hours",
+    },
+    {
+        // Question 6
+        Question: "A pipe can fill a tank in 5 hours, and a leak in the tank can empty the tank in 7 hours. If the pipe and leak work simultaneously, how long will it take to fill the tank?",
+        Options: ["17.5 hours", "35 hours", "10 hours", "14 hours"],
+        Ans: "35 hours",
+    },
+    {
+        // Question 7
+        Question: "A cistern is normally filled in 8 hours, but due to a leak, it takes 2 hours longer. How long would it take for the leak alone to empty the cistern?",
+        Options: ["32 hours", "40 hours", "48 hours", "60 hours"],
+        Ans: "40 hours",
+       
+    },
+    {
+        // Question 8
+        Question: "Pipe A can fill a tank in 12 hours, and Pipe B can empty it in 24 hours. If both pipes are opened together, how long will it take to fill the tank?",
+        Options: ["36 hours", "18 hours", "16 hours", "24 hours"],
+        Ans: "24 hours",
+    },
+    {
+       // Question 9
+       Question: "Two pipes can fill a cistern in 12 minutes and 15 minutes, respectively. If both are opened together, how much time will they take to fill the cistern?",
+        Options: ["6 minutes", "7 minutes", "8 minutes", "9 minutes"],
+        Ans: "6 minutes",
+    },
+    {   
+        // Question 10
+        Question: "Pipe A can fill a tank in 30 minutes, and Pipe B can fill the same tank in 20 minutes. How long will it take to fill the tank if both pipes are opened together?",
+        Options: ["12 minutes", "15 minutes", "18 minutes", "25 minutes"],
+        Ans: "12 minutes",
+       
+    }
+]
+
+//answer checking logic
+
+function checkAnswer(quizBtn) {
+    const selectedAnswer = quizBtn.textContent;
+    const correctAnswer = questions[currentQuestion].Ans;
+    const answerButtons = document.querySelectorAll('.quizBtn');
+
+    if (selectedAnswer === correctAnswer) {
+        score++;
+        document.querySelector('#score').textContent = score;
+        quizBtn.style.backgroundColor = 'green';
+    } else {
+        for (let i = 0; i < answerButtons.length; i++) {
+            if (answerButtons[i].textContent === correctAnswer) {
+                answerButtons[i].style.backgroundColor = 'green';
+            }else
+            quizBtn.style.backgroundColor = 'red';
+        }
+    }
+
+    // Disable buttons after an answer is selected
+    answerButtons.forEach(button => {
+        button.disabled = true;
+    });
+}
+
+//next question function
+
+function nextQuestion() {
+    if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        const questionElement = document.getElementById('h2question');
+        questionElement.textContent = `${questions[currentQuestion].Question}`;
+        const answerButtons = document.querySelectorAll('.quizBtn');
+        for (let i = 0; i < answerButtons.length; i++) {
+            answerButtons[i].textContent = questions[currentQuestion].Options[i];
+            answerButtons[i].style.backgroundColor = '';
+            answerButtons[i].disabled = false;
+        }
+        // Update the progress
+        updateProgress();
+        // Reset the timer
+        clearInterval(timeinterval);
+        startTimer(30);
+    } else {
+        // Construct the result URL with query parameters
+        const totalTime = 30 * (currentQuestion + 1); // Assuming each question takes 30 seconds
+        const totalQuestions = questions.length;
+        const attemptedQuestions = currentQuestion + 1;
+        const passFail = score >= totalQuestions /4 ? 'Pass' : 'Fail';
+        const correctAnswers = score;
+        const wrongAnswers = totalQuestions - score;
+        const percentage = ((score / totalQuestions) * 100).toFixed(2) + '%';
+        const resultUrl = `result.html?totalTime=${totalTime}&totalQuestions=${totalQuestions}&attemptedQuestions=${attemptedQuestions}&passFail=${passFail}&correctAnswers=${correctAnswers}&wrongAnswers=${wrongAnswers}&percentage=${percentage}&category=Pipes and Cisterns`;
+        // Redirect to the result page
+        window.location.href = resultUrl;
+    }
+}
+
+//update progress function
+
+function updateProgress() {
+    const progressElement = document.getElementById('progress');
+    progressElement.textContent = `${currentQuestion + 1}/${questions.length}`;
+}
+
+      // Timer start function
+      function startTimer(duration) {
+        let timeleft = duration;
+        const timer = document.getElementById('timer');
+        timer.textContent = `${timeleft}`;
+        timeleft--;
+        timeinterval = setInterval(function() {
+            if (timeleft > 0) {
+                timer.textContent = `${timeleft}`;
+                timeleft--;
+            } else {
+                clearInterval(timeinterval);
+                timer.innerHTML = `Time's up`;
+                nextQuestion();
+            }
+        }, 1000);
+    }
+
+    // Start the timer after the page fully loads
+    window.onload = function() {
+        updateProgress();
+        startTimer(30);
+    };
+
+
+const resultUrl = `result.html?totalTime=${totalTime}&totalQuestions=${totalQuestions}&attemptedQuestions=${attemptedQuestions}&passFail=${passFail}&correctAnswers=${correctAnswers}&wrongAnswers=${wrongAnswers}&percentage=${percentage}`;
+window.location.href = resultUrl;
+    </script>
+</body>
+</html>

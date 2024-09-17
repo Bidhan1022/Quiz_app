@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+
+    <!-- external css link -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- main container -->
+
+    <div class="container"> 
+        <div>
+            <!-- subject of the quiz -->
+            <h1>Probability</h1>
+        </div>
+        <hr>
+        <div class="container-2">
+            <div class="timerBorder">
+                <!-- timing display -->
+            <h3 id="timer">30</h3>
+            </div>
+        <div>
+            <!-- score display -->
+            <h3>SCORE: <span id="score">0</span></h3>
+        </div>
+    </div>
+    <!-- Question serial Position -->
+    <div id="progress"><h3>01/10</h3></div>
+    <div class="Questions">
+
+        <!-- question displayer heading -->
+        <h2 id="h2question">What is the probability of getting a heads in a fair coin toss?</h2>
+    </div>
+
+    <div>
+        <!-- option button -->
+        <button class="quizBtn" onclick="checkAnswer(this)">1/2</button>
+        <button class="quizBtn" onclick="checkAnswer(this)">1/4</button>
+        <br>
+        <button class="quizBtn" onclick="checkAnswer(this)">1/3</button>
+        <button class="quizBtn" onclick="checkAnswer(this)">1</button>
+        <br>
+        
+    </div>
+
+
+    <!-- button for next question -->
+    <button id="nextBtn" onclick="nextQuestion()">Next</button>
+
+    <!-- external script adding below -->
+    <script>
+        let currentQuestion = 0;
+        let score = 0;
+         let timeinterval;
+
+        const questions = [
+            {
+                // Question 1
+                Question: "What is the probability of getting a heads in a fair coin toss?",
+                Options: ["1/2", "1/4", "1/3", "1"],
+                Ans: "1/2",
+            },
+            {
+                // Question 2
+                Question: "If you randomly select a number between 1 and 10, what is the probability of selecting a prime number?",
+                Options: ["1/2", "2/5", "1/3", "3/10"],
+                Ans: "2/5",
+            },
+            {
+                // Question 3
+                Question: "If two coins are tossed, what is the probability of getting two heads?",
+                Options: ["1/4", "1/3", "1/2", "2/3"],
+                Ans: "1/4",
+            },
+            {
+                // Question 4
+                Question: "In a group of 3 people, what is the probability that at least two share the same birthday?",
+                Options: ["1/2", "2/3", "1/4", "1/3"],
+                Ans: "1/3",
+            },
+            {
+                // Question 5
+                Question: "What is the probability of getting at least one 6 in two rolls of a fair die?",
+                Options: ["1/6", "5/36", "11/36", "1/3"],
+                Ans: "11/36",
+            },
+            {
+                // Question 6
+                Question: "What is the probability of drawing a face card (Jack, Queen, or King) from a standard deck of 52 cards?",
+                Options: ["3/13", "1/13", "1/4", "9/52"],
+                Ans: "3/13",
+            },
+            {
+                // Question 7
+                Question: "If a box contains 3 red, 5 blue, and 2 green balls, what is the probability of drawing a blue ball?",
+                Options: ["5/10", "1/2", "2/5", "5/9"],
+                Ans: "5/10",
+            },
+            {
+                // Question 8
+                Question: "What is the probability of drawing a red card from a standard deck of 52 cards?",
+                Options: ["1/4", "1/2", "3/4", "1/52"],
+                Ans: "1/2",
+                
+            },
+            {
+                // Question 9
+                Question: "If you roll a fair die, what is the probability of rolling a number greater than 4?",
+                Options: ["1/3", "1/6", "1/2", "2/3"],
+                Ans: "1/3",
+                
+            },
+            {
+                // Question 10
+                Question: "What is the probability of drawing an ace from a standard deck of 52 cards?",
+                Options: ["1/13", "1/26", "1/52", "1/4"],
+                Ans: "1/13",
+                
+            }
+        ];
+
+        //answer checking logic
+        function checkAnswer(quizBtn) {
+            const selectedAnswer = quizBtn.textContent;
+            const correctAnswer = questions[currentQuestion].Ans;
+            const answerButtons = document.querySelectorAll('.quizBtn');
+
+            if (selectedAnswer === correctAnswer) {
+                score++;
+                document.querySelector('#score').textContent = score;
+                quizBtn.style.backgroundColor = 'green';
+            } else {
+                for (let i = 0; i < answerButtons.length; i++) {
+                    if (answerButtons[i].textContent === correctAnswer) {
+                        answerButtons[i].style.backgroundColor = 'green';
+                    } else {
+                        quizBtn.style.backgroundColor = 'red';
+                    }
+                }
+            }
+
+            // Disable buttons after an answer is selected
+            answerButtons.forEach(button => {
+                button.disabled = true;
+            });
+        }
+
+        //next question function
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                const questionElement = document.getElementById('h2question');
+                questionElement.textContent = `${questions[currentQuestion].Question}`;
+                const answerButtons = document.querySelectorAll('.quizBtn');
+                for (let i = 0; i < answerButtons.length; i++) {
+                    answerButtons[i].textContent = questions[currentQuestion].Options[i];
+                    answerButtons[i].style.backgroundColor = '';
+                    answerButtons[i].disabled = false;
+                }
+                // Update the progress
+                updateProgress();
+                // Reset the timer
+                clearInterval(timeinterval);
+                startTimer(30);
+            } else {
+                // Construct the result URL with query parameters
+                const totalTime = 30 * (currentQuestion + 1); // Assuming each question takes 30 seconds
+                const totalQuestions = questions.length;
+                const attemptedQuestions = currentQuestion + 1;
+                const passFail = score >= totalQuestions / 4 ? 'Pass' : 'Fail';
+                const correctAnswers = score;
+                const wrongAnswers = totalQuestions - score;
+                const percentage = ((score / totalQuestions) * 100).toFixed(2) + '%';
+                const resultUrl = `result.html?totalTime=${totalTime}&totalQuestions=${totalQuestions}&attemptedQuestions=${attemptedQuestions}&passFail=${passFail}&correctAnswers=${correctAnswers}&wrongAnswers=${wrongAnswers}&percentage=${percentage}&category=Probability`;
+                // Redirect to the result page
+                window.location.href = resultUrl;
+            }
+        }
+
+        //update progress function
+        function updateProgress() {
+            const progressElement = document.getElementById('progress');
+            progressElement.textContent = `${currentQuestion + 1}/${questions.length}`;
+        }
+
+           // Timer start function
+    function startTimer(duration) {
+        let timeleft = duration;
+        const timer = document.getElementById('timer');
+        timer.textContent = `${timeleft}`;
+        timeleft--;
+        timeinterval = setInterval(function() {
+            if (timeleft > 0) {
+                timer.textContent = `${timeleft}`;
+                timeleft--;
+            } else {
+                clearInterval(timeinterval);
+                timer.innerHTML = `Time's up`;
+                nextQuestion();
+            }
+        }, 1000);
+    }
+
+    // Start the timer after the page fully loads
+    window.onload = function() {
+        updateProgress();
+        startTimer(30);
+    };
+
+        const resultUrl = `result.html?totalTime=${totalTime}&totalQuestions=${totalQuestions}&attemptedQuestions=${attemptedQuestions}&passFail=${passFail}&correctAnswers=${correctAnswers}&wrongAnswers=${wrongAnswers}&percentage=${percentage}`;
+window.location.href = resultUrl;
+
+    </script>
+</body>
+</html>

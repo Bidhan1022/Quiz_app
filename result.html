@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Result</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Quiz Results</h1>
+        <hr>
+
+        <!-- Display Results -->
+        <div class="result-section">
+            <p><strong>Total Time:</strong> <span id="totalTime"></span> seconds</p>
+            <p><strong>Total Questions:</strong> <span id="totalQuestions"></span></p>
+            <p><strong>Attempted Questions:</strong> <span id="attemptedQuestions"></span></p>
+            <p><strong>Correct Answers:</strong> <span id="correctAnswers"></span></p>
+            <p><strong>Wrong Answers:</strong> <span id="wrongAnswers"></span></p>
+            <p><strong>Percentage:</strong> <span id="percentage"></span></p>
+            <p><strong>Result:</strong> <span id="passFail"></span></p>
+        </div>
+
+        <!-- Buttons for actions -->
+        <div class="button-section">
+            <button onclick="window.location.href='index.html'">Go to Home</button>
+            <button id="restartQuizBtn">Start Again</button>
+        </div>
+    </div>
+    <script>
+        // Function to get query parameters from URL
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                totalTime: params.get('totalTime'),
+                totalQuestions: params.get('totalQuestions'),
+                attemptedQuestions: params.get('attemptedQuestions'),
+                passFail: params.get('passFail'),
+                correctAnswers: params.get('correctAnswers'),
+                wrongAnswers: params.get('wrongAnswers'),
+                percentage: params.get('percentage'),
+                category: params.get('category') // Get the selected category from the URL
+            };
+        }
+        
+        // Function to display the results
+        function displayResults() {
+            const results = getQueryParams();
+            document.getElementById('totalTime').textContent = results.totalTime;
+            document.getElementById('totalQuestions').textContent = results.totalQuestions;
+            document.getElementById('attemptedQuestions').textContent = results.attemptedQuestions;
+            document.getElementById('correctAnswers').textContent = results.correctAnswers;
+            document.getElementById('wrongAnswers').textContent = results.wrongAnswers;
+            document.getElementById('percentage').textContent = results.percentage;
+            document.getElementById('passFail').textContent = results.passFail;
+            
+            // Update Restart button URL
+            document.getElementById('restartQuizBtn').onclick = function() {
+                // Check if the quiz is for Probability and redirect accordingly
+                if (results.category === "Probability") {
+                    window.location.href = 'probability.html';
+
+                } else if (results.category === "Profit and Loss") {
+                    window.location.href = 'Profit and Loss.html';}
+
+                    else if (results.category === "Problems on Age") {
+                    window.location.href = 'Problems on Age.html';}
+
+                    else if (results.category === "Pipes and Cisterns") {
+                    window.location.href = 'Pipes and Cisterns.html';}
+
+                   else {
+                    // Redirect to some other default quiz page if needed
+                    window.location.href = 'quiz.html';
+                }
+            };
+        }
+        
+        // Call the function to display results
+        displayResults();
+        </script>
+        
+</body>
+</html>

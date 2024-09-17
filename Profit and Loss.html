@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+
+    <!-- external css link -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- main container -->
+    <div class="container"> 
+        <div>
+            <!-- subject of the quiz -->
+            <h1>Profit and Loss</h1>
+        </div>
+        <hr>
+        <div class="container-2">
+            <div class="timerBorder">
+                <!-- timing display -->
+                <h3 id="timer">30</h3>
+            </div>
+            <div>
+                <!-- score display -->
+                <h3>SCORE: <span id="score">0</span></h3>
+            </div>
+        </div>
+        <!-- Question serial Position -->
+        <div id="progress"><h3>01/10</h3></div>
+        <div class="Questions">
+            <!-- question displayer heading -->
+            <h2 id="h2question">Question will appear here</h2>
+        </div>
+        <div>
+            <!-- option button -->
+            <button class="quizBtn" onclick="checkAnswer(this)">Option 1</button>
+            <button class="quizBtn" onclick="checkAnswer(this)">Option 2</button>
+            <br>
+            <button class="quizBtn" onclick="checkAnswer(this)">Option 3</button>
+            <button class="quizBtn" onclick="checkAnswer(this)">Option 4</button>
+            <br>
+        </div>
+
+        <!-- button for next question -->
+        <button id="nextBtn" onclick="nextQuestion()">Next</button>
+
+        <!-- external script adding below -->
+        <script>
+            let currentQuestion = 0;
+            let score = 0;
+
+            // Profit and Loss Questions
+            const questions = [
+                {
+                    Question: "If a man buys a product for $500 and sells it for $600, what is his profit percentage?",
+                    Options: ["10%", "20%", "25%", "30%"],
+                    Ans: "20%"
+                },
+                {
+                    Question: "A trader sold an item at a loss of 10%. If the cost price of the item was $500, what was the selling price?",
+                    Options: ["$450", "$480", "$470", "$500"],
+                    Ans: "$450"
+                },
+                {
+                    Question: "What is the formula for calculating profit percentage?",
+                    Options: ["(Profit/Cost Price) * 100", "(Cost Price/Profit) * 100", "(Selling Price/Profit) * 100", "(Selling Price/Cost Price) * 100"],
+                    Ans: "(Profit/Cost Price) * 100"
+                },
+                {
+                    Question: "If a person sells a product at 15% profit for $690, what was the cost price?",
+                    Options: ["$600", "$650", "$590", "$610"],
+                    Ans: "$600"
+                },
+                {
+                    Question: "A shopkeeper makes a loss of 5% by selling a book for $380. What was the cost price of the book?",
+                    Options: ["$400", "$395", "$385", "$360"],
+                    Ans: "$400"
+                },
+                {
+                    Question: "If the cost price is $250 and the selling price is $275, what is the profit percentage?",
+                    Options: ["10%", "12%", "9%", "15%"],
+                    Ans: "10%"
+                },
+                {
+                    Question: "If an item is sold at a 20% gain for $720, what was the cost price?",
+                    Options: ["$600", "$650", "$580", "$640"],
+                    Ans: "$600"
+                },
+                {
+                    Question: "A man sells an item for $600 at a loss of 25%. What was the cost price?",
+                    Options: ["$700", "$750", "$800", "$720"],
+                    Ans: "$800"
+                },
+                {
+                    Question: "If the selling price is $450 and the loss is 10%, what is the cost price?",
+                    Options: ["$500", "$480", "$460", "$470"],
+                    Ans: "$500"
+                },
+                {
+                    Question: "If a product costs $150 and the shopkeeper wants a 30% profit, what should be the selling price?",
+                    Options: ["$180", "$195", "$200", "$225"],
+                    Ans: "$195"
+                }
+            ];
+
+            // Answer checking logic
+            function checkAnswer(quizBtn) {
+                const selectedAnswer = quizBtn.textContent;
+                const correctAnswer = questions[currentQuestion].Ans;
+                const answerButtons = document.querySelectorAll('.quizBtn');
+
+                if (selectedAnswer === correctAnswer) {
+                    score++;
+                    document.querySelector('#score').textContent = score;
+                    quizBtn.style.backgroundColor = 'green';
+                } else {
+                    answerButtons.forEach(button => {
+                        if (button.textContent === correctAnswer) {
+                            button.style.backgroundColor = 'green';
+                        }
+                    });
+                    quizBtn.style.backgroundColor = 'red';
+                }
+
+                // Disable buttons after an answer is selected
+                answerButtons.forEach(button => {
+                    button.disabled = true;
+                });
+            }
+
+            // Next question function
+            function nextQuestion() {
+                if (currentQuestion < questions.length - 1) {
+                    currentQuestion++;
+                    document.getElementById('h2question').textContent = questions[currentQuestion].Question;
+                    const answerButtons = document.querySelectorAll('.quizBtn');
+                    for (let i = 0; i < answerButtons.length; i++) {
+                        answerButtons[i].textContent = questions[currentQuestion].Options[i];
+                        answerButtons[i].style.backgroundColor = '';
+                        answerButtons[i].disabled = false;
+                    }
+                    updateProgress();
+                    clearInterval(timeinterval);
+                    startTimer(30);
+                } else {
+                    // Redirect to result page
+                    const resultUrl = 'result.html?score=' + score;
+                    window.location.href = resultUrl;
+                }
+            }
+
+            // Update progress function
+            function updateProgress() {
+                document.getElementById('progress').textContent = `${currentQuestion + 1}/${questions.length}`;
+            }
+
+                  // Timer start function
+    function startTimer(duration) {
+        let timeleft = duration;
+        const timer = document.getElementById('timer');
+        timer.textContent = `${timeleft}`;
+        timeleft--;
+        timeinterval = setInterval(function() {
+            if (timeleft > 0) {
+                timer.textContent = `${timeleft}`;
+                timeleft--;
+            } else {
+                clearInterval(timeinterval);
+                timer.innerHTML = `Time's up`;
+                nextQuestion();
+            }
+        }, 1000);
+    }
+
+    // Start the timer after the page fully loads
+    window.onload = function() {
+        updateProgress();
+        startTimer(30);
+    };
+            const resultUrl = `result.html?totalTime=${totalTime}&totalQuestions=${totalQuestions}&attemptedQuestions=${attemptedQuestions}&passFail=${passFail}&correctAnswers=${correctAnswers}&wrongAnswers=${wrongAnswers}&percentage=${percentage}&category=Profit and Loss`;
+            window.location.href = resultUrl;
+
+            
+        </script>
+    </div>
+</body>
+</html>

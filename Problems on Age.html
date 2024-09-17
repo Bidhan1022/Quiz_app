@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+
+    <!-- external css link -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- main container -->
+    <div class="container"> 
+        <div>
+            <!-- subject of the quiz -->
+            <h1>Problems on Age</h1>
+        </div>
+        <hr>
+        <div class="container-2">
+            <div class="timerBorder">
+                <!-- timing display -->
+            <h3 id="timer">30</h3>
+            </div>
+            <div>
+                <!-- score display -->
+                <h3>SCORE: <span id="score">0</span></h3>
+            </div>
+        </div>
+        <!-- Question serial Position -->
+        <div id="progress"><h3>01/10</h3></div>
+        <div class="Questions">
+            <!-- question displayer heading -->
+            <h2 id="h2question">How old is John if his brother is 5 years younger and their combined age is 35?</h2>
+        </div>
+
+        <div>
+            <!-- option button -->
+            <button class="quizBtn" onclick="checkAnswer(this)">20</button>
+            <button class="quizBtn" onclick="checkAnswer(this)">18</button>
+            <br>
+            <button class="quizBtn" onclick="checkAnswer(this)">19</button>
+            <button class="quizBtn" onclick="checkAnswer(this)">17</button>
+            <br>
+        </div>
+
+        <!-- button for next question -->
+        <button id="nextBtn" onclick="nextQuestion()">Next</button>
+
+        <!-- external script adding below -->
+        <script>
+            let currentQuestion = 0;
+            let score = 0;
+
+            // Problems on Age questions
+            const questions = [
+                {
+                    Question: "How old is John if his brother is 5 years younger and their combined age is 35?",
+                    Options: ["20", "18", "19", "17"],
+                    Ans: "20",
+                },
+                {
+                    Question: "A mother is 24 years older than her daughter. In two years, her age will be twice her daughter's age. How old is the daughter now?",
+                    Options: ["10", "8", "6", "12"],
+                    Ans: "10",
+                },
+                {
+                    Question: "The sum of the ages of a father and his son is 45 years. Five years ago, the father's age was four times his son's age. What is the son's age now?",
+                    Options: ["8", "9", "6", "10"],
+                    Ans: "9",
+                },
+                {
+                    Question: "In 5 years, Jack will be twice as old as he was 5 years ago. How old is Jack now?",
+                    Options: ["15", "20", "25", "10"],
+                    Ans: "15",
+                },
+                {
+                    Question: "If the ratio of the ages of two people is 4:3 and the elder one is 32 years old, what is the age of the younger one?",
+                    Options: ["24", "22", "30", "26"],
+                    Ans: "24",
+                },
+                {
+                    Question: "In 4 years, a father will be 3 times as old as his son. Four years ago, the father was 5 times as old as his son. What is the son's current age?",
+                    Options: ["4", "6", "8", "10"],
+                    Ans: "6",
+                },
+                {
+                    Question: "A man’s age is 3 times the sum of the ages of his two sons. After 5 years, his age will be double the sum of their ages. How old is the man now?",
+                    Options: ["40", "45", "50", "35"],
+                    Ans: "45",
+                },
+                {
+                    Question: "The present ages of two friends are in the ratio 5:6. Four years ago, the ratio of their ages was 4:5. What are their present ages?",
+                    Options: ["20, 24", "25, 30", "30, 36", "24, 28"],
+                    Ans: "20, 24",
+                },
+                {
+                    Question: "The average age of a family of 6 people is 20 years. If the age of the youngest member is 8, what is the total age of the family?",
+                    Options: ["120", "140", "160", "180"],
+                    Ans: "120",
+                },
+                {
+                    Question: "A grandfather is 6 times older than his grandson. The sum of their ages is 84 years. How old is the grandson?",
+                    Options: ["10", "12", "14", "16"],
+                    Ans: "12",
+                }
+            ];
+
+            //answer checking logic
+            function checkAnswer(quizBtn) {
+                const selectedAnswer = quizBtn.textContent;
+                const correctAnswer = questions[currentQuestion].Ans;
+                const answerButtons = document.querySelectorAll('.quizBtn');
+
+                if (selectedAnswer === correctAnswer) {
+                    score++;
+                    document.querySelector('#score').textContent = score;
+                    quizBtn.style.backgroundColor = 'green';
+                } else {
+                    for (let i = 0; i < answerButtons.length; i++) {
+                        if (answerButtons[i].textContent === correctAnswer) {
+                            answerButtons[i].style.backgroundColor = 'green';
+                        }
+                    }
+                    quizBtn.style.backgroundColor = 'red';
+                }
+
+                // Disable buttons after an answer is selected
+                answerButtons.forEach(button => {
+                    button.disabled = true;
+                });
+            }
+
+            //next question function
+            function nextQuestion() {
+                if (currentQuestion < questions.length - 1) {
+                    currentQuestion++;
+                    const questionElement = document.getElementById('h2question');
+                    questionElement.textContent = `${questions[currentQuestion].Question}`;
+                    const answerButtons = document.querySelectorAll('.quizBtn');
+                    for (let i = 0; i < answerButtons.length; i++) {
+                        answerButtons[i].textContent = questions[currentQuestion].Options[i];
+                        answerButtons[i].style.backgroundColor = '';
+                        answerButtons[i].disabled = false;
+                    }
+                    // Update the progress
+                    updateProgress();
+                    // Reset the timer
+                    clearInterval(timeinterval);
+                    startTimer(30);
+                } else {
+                    // Redirect to result page
+                    const totalTime = 30 * (currentQuestion + 1);
+                    const totalQuestions = questions.length;
+                    const attemptedQuestions = currentQuestion + 1;
+                    const passFail = score >= totalQuestions / 4 ? 'Pass' : 'Fail';
+                    const correctAnswers = score;
+                    const wrongAnswers = totalQuestions - score;
+                    const percentage = ((score / totalQuestions) * 100).toFixed(2) + '%';
+                    const resultUrl = `result.html?totalTime=${totalTime}&totalQuestions=${totalQuestions}&attemptedQuestions=${attemptedQuestions}&passFail=${passFail}&correctAnswers=${correctAnswers}&wrongAnswers=${wrongAnswers}&percentage=${percentage}`;
+                    window.location.href = resultUrl;
+                }
+            }
+
+            //update progress function
+            function updateProgress() {
+                const progressElement = document.getElementById('progress');
+                progressElement.textContent = `${currentQuestion + 1}/${questions.length}`;
+            }
+
+                 // Timer start function
+    function startTimer(duration) {
+        let timeleft = duration;
+        const timer = document.getElementById('timer');
+        timer.textContent = `${timeleft}`;
+        timeleft--;
+        timeinterval = setInterval(function() {
+            if (timeleft > 0) {
+                timer.textContent = `${timeleft}`;
+                timeleft--;
+            } else {
+                clearInterval(timeinterval);
+                timer.innerHTML = `Time's up`;
+                nextQuestion();
+            }
+        }, 1000);
+    }
+
+    // Start the timer after the page fully loads
+    window.onload = function() {
+        updateProgress();
+        startTimer(30);
+    };
+            const resultUrl = `result.html?totalTime=${totalTime}&totalQuestions=${totalQuestions}&attemptedQuestions=${attemptedQuestions}&passFail=${passFail}&correctAnswers=${correctAnswers}&wrongAnswers=${wrongAnswers}&percentage=${percentage}&category=Problem on Age`;
+            window.location.href = resultUrl;
+
+            
+        </script>
+    </div>
+</body>
+</html>
